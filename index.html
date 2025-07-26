@@ -1,1 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swim Pace Clock</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a2e;
+            color: #fff;
+        }
+        .container {
+            text-align: center;
+        }
+        #timer {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+        .settings {
+            margin-bottom: 20px;
+        }
+        select, input {
+            padding: 10px;
+            margin: 5px;
+            font-size: 1em;
+            background-color: #16213e;
+            color: #fff;
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1em;
+            background-color: #00d4ff;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #00b4d8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="timer">00:00</div>
+        <div class="settings">
+            <select id="workoutType">
+                <option value="Swim">Swim</option>
+                <option value="Sprint">Sprint</option>
+                <option value="Endurance">Endurance</option>
+            </select>
+            <input type="number" id="goalTime" placeholder="Goal Time (sec)" min="0">
+            <input type="number" id="restTime" placeholder="Rest Time (sec)" min="0">
+        </div>
+        <div>
+            <button onclick="startTimer()">Start</button>
+            <button onclick="pauseTimer()">Pause</button>
+            <button onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
 
+    <script>
+        let time = 0;
+        let goalTime = 0;
+        let restTime = 0;
+        let timerInterval;
+
+        function updateDisplay() {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (!timerInterval) {
+                goalTime = parseInt(document.getElementById('goalTime').value) || 0;
+                restTime = parseInt(document.getElementById('restTime').value) || 0;
+                timerInterval = setInterval(() => {
+                    time++;
+                    updateDisplay();
+                    if (time >= goalTime + restTime) {
+                        pauseTimer();
+                        alert('Workout and rest time completed!');
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            time = 0;
+            updateDisplay();
+            document.getElementById('goalTime').value = '';
+            document.getElementById('restTime').value = '';
+        }
+    </script>
+</body>
+</html>
